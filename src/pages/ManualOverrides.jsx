@@ -72,7 +72,7 @@ function ManualOverrides() {
   // Define loan table columns
   const loanColumns = [
     { key: 'userName', header: 'User' },
-    { key: 'amount', header: 'Amount', render: (item) => `$${item.amount}` },
+    { key: 'amount', header: 'Amount', render: (item) => `#${item.amount}` },
     { key: 'purpose', header: 'Purpose' },
     { key: 'status', header: 'Status', render: (item) => <StatusBadge status={item.status} /> },
     { 
@@ -97,7 +97,7 @@ function ManualOverrides() {
     { key: 'name', header: 'Name' },
     { key: 'status', header: 'Status', render: (item) => <StatusBadge status={item.status} /> },
     { key: 'loanCount', header: 'Loans' },
-    { key: 'totalBorrowed', header: 'Total Borrowed', render: (item) => `$${item.totalBorrowed}` },
+    { key: 'totalBorrowed', header: 'Total Borrowed', render: (item) => `#${item.totalBorrowed}` },
     { 
       key: 'actions',
       header: 'Actions',
@@ -209,7 +209,7 @@ function ManualOverrides() {
                     <>
                       <div className="flex justify-between">
                         <span className="text-sm text-neutral-500">Current Amount:</span>
-                        <span className="text-sm font-medium">${selectedCase.amount}</span>
+                        <span className="text-sm font-medium">#{selectedCase.amount}</span>
                       </div>
                       
                       <div className="flex justify-between">
@@ -228,7 +228,7 @@ function ManualOverrides() {
                       
                       <div className="flex justify-between">
                         <span className="text-sm text-neutral-500">Total Borrowed:</span>
-                        <span className="text-sm font-medium">${selectedCase.totalBorrowed}</span>
+                        <span className="text-sm font-medium">#{selectedCase.totalBorrowed}</span>
                       </div>
                     </>
                   )}
@@ -241,7 +241,7 @@ function ManualOverrides() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-neutral-500">$</span>
+                    <span className="text-neutral-500">#</span>
                   </div>
                   <input
                     id="overrideAmount"

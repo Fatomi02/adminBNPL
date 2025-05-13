@@ -27,7 +27,7 @@ function Dashboard() {
   // Define table columns
   const loanColumns = [
     { key: 'userName', header: 'User' },
-    { key: 'amount', header: 'Amount', render: (item) => `$${item.amount}` },
+    { key: 'amount', header: 'Amount', render: (item) => `#${item.amount}` },
     { key: 'purpose', header: 'Purpose' },
     { key: 'date', header: 'Date' },
     { key: 'status', header: 'Status' },

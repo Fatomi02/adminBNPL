@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiSearch, FiCheckCircle, FiXCircle, FiAlertCircle, FiDollarSign } from 'react-icons/fi';
+import { FiSearch, FiCheckCircle, FiXCircle, FiAlertCircle } from 'react-icons/fi';
 import useLoanStore from '../stores/loanStore';
 import Card from '../components/ui/Card';
 import Table from '../components/ui/Table';
@@ -44,7 +44,7 @@ function LoanApplications() {
   // Define table columns
   const columns = [
     { key: 'userName', header: 'User' },
-    { key: 'amount', header: 'Amount', render: (item) => `$${item.amount}` },
+    { key: 'amount', header: 'Amount', render: (item) => `#${item.amount}` },
     { key: 'purpose', header: 'Purpose' },
     { key: 'date', header: 'Application Date' },
     { key: 'status', header: 'Status', render: (item) => <StatusBadge status={item.status} /> },
@@ -103,9 +103,9 @@ function LoanApplications() {
                 className="w-full md:w-40 px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
               >
                 <option value="all">All Amounts</option>
-                <option value="low">Under $500</option>
-                <option value="medium">$500 - $2,000</option>
-                <option value="high">Over $2,000</option>
+                <option value="low">Under #500</option>
+                <option value="medium">#500 - #2,000</option>
+                <option value="high">Over #2,000</option>
               </select>
             </div>
             
@@ -173,8 +173,7 @@ function LoanApplications() {
               <div className="space-y-4">
                 <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
                   <div className="flex items-center justify-center h-32 bg-neutral-100 rounded mb-4">
-                    <FiDollarSign size={36} className="text-primary-500" />
-                    <span className="ml-2 text-2xl font-semibold text-neutral-800">${selectedLoan.amount}</span>
+                    <span className="ml-2 text-2xl font-semibold text-neutral-800">#{selectedLoan.amount}</span>
                   </div>
                   
                   <div className="flex justify-between">
@@ -232,7 +231,6 @@ function LoanApplications() {
               </div>
             ) : (
               <div className="p-8 flex flex-col items-center justify-center text-center">
-                <FiDollarSign size={48} className="text-neutral-300 mb-4" />
                 <p className="text-neutral-500">Select a loan application to view details</p>
               </div>
             )}

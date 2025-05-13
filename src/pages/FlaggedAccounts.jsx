@@ -289,7 +289,7 @@ function FlaggedAccounts() {
                     
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-500">Total Borrowed:</span>
-                      <span className="text-sm font-medium">${selectedUser.totalBorrowed}</span>
+                      <span className="text-sm font-medium">#{selectedUser.totalBorrowed}</span>
                     </div>
                     
                     <div className="flex justify-between">

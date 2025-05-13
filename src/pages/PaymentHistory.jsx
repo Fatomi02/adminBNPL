@@ -42,7 +42,7 @@ function PaymentHistory() {
       header: 'Amount', 
       render: (item) => (
         <div className="flex items-center">
-          <span className="mr-1">$</span>
+          <span className="mr-1">#</span>
           <span>{item.amount}</span>
         </div>
       )

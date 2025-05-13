@@ -61,7 +61,7 @@ function UserList() {
       header: 'Total Borrowed',
       render: (item) => (
         <div>
-          ${item.totalBorrowed}
+          #{item.totalBorrowed}
         </div>
       )
     },
@@ -177,7 +177,7 @@ function UserList() {
                     </div>
                     
                     <div className="text-center">
-                      <div className="text-2xl font-semibold text-neutral-800">${selectedUser.totalBorrowed}</div>
+                      <div className="text-2xl font-semibold text-neutral-800">#{selectedUser.totalBorrowed}</div>
                       <div className="text-xs text-neutral-500">Total Borrowed</div>
                     </div>
                     

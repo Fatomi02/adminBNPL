@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
 import clsx from 'clsx';
 import Card from './Card';
