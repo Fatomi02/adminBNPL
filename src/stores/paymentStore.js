@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { mockPaymentData } from '../data/mockData';
+import api from '../api/api';
 
 const usePaymentStore = create((set, get) => ({
-  transactions: mockPaymentData.transactions,
+  transactions: [],
   selectedTransaction: null,
   filters: {
     type: 'all',
@@ -14,14 +14,14 @@ const usePaymentStore = create((set, get) => ({
   isLoading: false,
   error: null,
   
-  fetchTransactions: async () => {
+  fetchPaymentHistory: async () => {
     set({ isLoading: true });
     
     try {
-      // In a real app, this would be an API call
-      // await new Promise(resolve => setTimeout(resolve, 1000)); // simulate delay
+      const res = await api.get('admin/payment-history');
+      console.log(res.data)
       set({ 
-        transactions: mockPaymentData.transactions,
+        transactions: res.data,
         isLoading: false,
         error: null
       });

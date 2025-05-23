@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import { mockKycData } from '../data/mockData';
+import api from '../api/api';
+import { toast } from 'react-toastify';
 
 const useKycStore = create((set, get) => ({
-  kycSubmissions: mockKycData.submissions,
+  kycSubmissions: [],
   selectedKyc: null,
   filters: {
     status: 'all',
@@ -16,14 +17,14 @@ const useKycStore = create((set, get) => ({
     set({ isLoading: true });
     
     try {
-      // In a real app, this would be an API call
-      // await new Promise(resolve => setTimeout(resolve, 1000)); // simulate delay
+        const response = await api.get("auth/users");
       set({ 
-        kycSubmissions: mockKycData.submissions,
+        kycSubmissions: response?.data?.users,
         isLoading: false,
         error: null
       });
     } catch (error) {
+      toast.error( error?.response?.data?.message || "Error fetching users");
       set({ isLoading: false, error: error.message });
     }
   },
@@ -33,17 +34,32 @@ const useKycStore = create((set, get) => ({
     set({ selectedKyc });
   },
   
-  updateKycStatus: (kycId, status) => {
-    const updatedSubmissions = get().kycSubmissions.map(kyc => 
-      kyc.id === kycId ? { ...kyc, status } : kyc
-    );
-    
-    set({ 
-      kycSubmissions: updatedSubmissions,
-      selectedKyc: get().selectedKyc?.id === kycId 
-        ? { ...get().selectedKyc, status } 
-        : get().selectedKyc
-    });
+  updateKycStatus: async (kycId, status)  => {
+    const payload = {
+        adminid: "Admin 123",
+        adminPassword: "admin 123",
+        decision: status
+    }
+    set({isLoading: true});
+    try {
+      const res = await api.patch(`admin/kyc/${kycId}/approve`, payload);
+      toast.success(res.data.message || 'KYC status updated successfully');
+      const updatedSubmissions = get().kycSubmissions.map(kyc => 
+        kyc.id === kycId ? { ...kyc, kycStatus: status } : kyc
+      );
+      
+      set({ 
+        kycSubmissions: updatedSubmissions,
+        selectedKyc: get().selectedKyc?.id === kycId 
+          ? { ...get().selectedKyc, kycStatus: status } 
+          : get().selectedKyc
+      });
+    } catch (error) {
+      toast.error(error.response.data.message || 'Failed to update KYC status');
+      set({ error: error.message });
+    } finally {
+      set({ isLoading: false });
+    }
   },
   
   setFilters: (newFilters) => {
@@ -55,12 +71,12 @@ const useKycStore = create((set, get) => ({
     
     return kycSubmissions.filter(kyc => {
       // Filter by status
-      if (filters.status !== 'all' && kyc.status.toLowerCase() !== filters.status.toLowerCase()) {
+      if (filters.status !== 'all' && kyc.kycStatus.toLowerCase() !== filters.status.toLowerCase()) {
         return false;
       }
       
       // Filter by search term
-      if (filters.search && !`${kyc.userId} ${kyc.userName}`.toLowerCase().includes(filters.search.toLowerCase())) {
+      if (filters.search && !`${kyc.id} ${kyc.fullName}`.toLowerCase().includes(filters.search.toLowerCase())) {
         return false;
       }
       

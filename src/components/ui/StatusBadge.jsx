@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import clsx from 'clsx';
 
 function StatusBadge({ status, size = 'default' }) {
@@ -30,6 +31,7 @@ function StatusBadge({ status, size = 'default' }) {
     <span 
       className={clsx(
         'badge', 
+        'capitalize',
         getStatusClass(),
         size === 'small' && 'text-xs px-1.5 py-0.5',
         size === 'large' && 'text-sm px-3 py-1.5'

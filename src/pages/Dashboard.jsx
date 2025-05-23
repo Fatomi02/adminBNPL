@@ -10,10 +10,10 @@ import PieChart from '../components/charts/PieChart';
 
 function Dashboard() {
   const { 
+    users,
     stats, 
     loanApplications, 
     kycSubmissions, 
-    flaggedAccounts,
     paymentTrends,
     loanDistribution,
     fetchDashboardData,
@@ -24,24 +24,26 @@ function Dashboard() {
     fetchDashboardData();
   }, [fetchDashboardData]);
   
+    const flagged = users.filter(user => user.status === 'Flagged');
+
   // Define table columns
   const loanColumns = [
-    { key: 'userName', header: 'User' },
+    { key: 'fullName', header: 'User' },
     { key: 'amount', header: 'Amount', render: (item) => `#${item.amount}` },
     { key: 'purpose', header: 'Purpose' },
-    { key: 'date', header: 'Date' },
+    { key: 'createdAt', header: 'Date' },
     { key: 'status', header: 'Status' },
   ];
   
   const kycColumns = [
-    { key: 'userName', header: 'User' },
-    { key: 'documentType', header: 'Document' },
-    { key: 'date', header: 'Date' },
-    { key: 'status', header: 'Status' },
+    { key: 'fullName', header: 'User' },
+    { key: 'idType', header: 'Document' },
+    { key: 'createdAt', header: 'Date' },
+    { key: 'kycStatus', header: 'Status' },
   ];
   
   const flaggedColumns = [
-    { key: 'name', header: 'User' },
+    { key: 'fullName', header: 'User' },
     { key: 'reason', header: 'Reason' },
     { key: 'riskLevel', header: 'Risk Level', render: (item) => (
       <StatusBadge 
@@ -62,30 +64,30 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard 
           title="Total Users" 
-          value={stats[0].value} 
-          changePercent={stats[0].changePercent} 
-          trend={stats[0].trend} 
+          value={stats?.totalUsers || '--'} 
+          // changePercent={stats[0].changePercent} 
+          // trend={stats[0].trend} 
           icon={FiUser} 
         />
         <StatsCard 
           title="Active Loan Amount" 
-          value={stats[1].value} 
-          changePercent={stats[1].changePercent} 
-          trend={stats[1].trend} 
+          value={stats?.activeLoanAmount || '--'} 
+          // changePercent={stats[1].changePercent} 
+          // trend={stats[1].trend} 
           icon={FiDollarSign} 
         />
         <StatsCard 
           title="Repayment Rate" 
-          value={stats[2].value} 
-          changePercent={stats[2].changePercent} 
-          trend={stats[2].trend} 
+          value={stats?.repaymentRate || '--'} 
+          // changePercent={stats[2].changePercent} 
+          // trend={stats[2].trend} 
           icon={FiPercent} 
         />
         <StatsCard 
           title="Flagged Accounts" 
-          value={stats[3].value} 
-          changePercent={stats[3].changePercent} 
-          trend={stats[3].trend} 
+          value={stats?.flaggedAccounts || '--'} 
+          // changePercent={stats[3].changePercent} 
+          // trend={stats[3].trend} 
           icon={FiAlertTriangle} 
         />
       </div>
@@ -166,7 +168,7 @@ function Dashboard() {
       >
         <Table 
           columns={flaggedColumns} 
-          data={flaggedAccounts}
+          data={flagged}
           pagination={false}
           isLoading={isLoading}
         />

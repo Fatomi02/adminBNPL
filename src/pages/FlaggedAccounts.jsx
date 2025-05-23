@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiSearch, FiAlertTriangle, FiEdit2, FiMessageSquare, FiCheck } from 'react-icons/fi';
+import { FiSearch, FiAlertTriangle, FiMessageSquare, FiCheck } from 'react-icons/fi';
 import useUserStore from '../stores/userStore';
 import Card from '../components/ui/Card';
 import Table from '../components/ui/Table';
@@ -8,10 +8,10 @@ import StatusBadge from '../components/ui/StatusBadge';
 function FlaggedAccounts() {
   const { 
     users, 
-    selectedUser,
+    selectedFlaggedUser,
+    unFlagAccount,
     fetchUsers, 
-    selectUser,
-    updateUserStatus,
+    selectFlaggedUser,
     isLoading
   } = useUserStore();
   
@@ -31,7 +31,7 @@ function FlaggedAccounts() {
       const searchTerm = searchInput.toLowerCase();
       setFilteredUsers(
         flagged.filter(user => 
-          user.name.toLowerCase().includes(searchTerm) || 
+          user.fullName.toLowerCase().includes(searchTerm) || 
           user.email.toLowerCase().includes(searchTerm) ||
           user.id.toLowerCase().includes(searchTerm)
         )
@@ -46,14 +46,10 @@ function FlaggedAccounts() {
     // Search is handled in the useEffect above
   };
   
-  // Handle resolving a flagged account
-  const handleResolveFlag = (userId) => {
-    updateUserStatus(userId, 'Active');
-  };
   
   // Define table columns
   const columns = [
-    { key: 'name', header: 'Name' },
+    { key: 'fullName', header: 'Name' },
     { key: 'email', header: 'Email' },
     { 
       key: 'reason',
@@ -72,67 +68,9 @@ function FlaggedAccounts() {
       }
     },
     { 
-      key: 'riskLevel',
-      header: 'Risk Level',
-      render: (user) => {
-        // Get risk level from flagged accounts data (simulated)
-        const riskLevels = {
-          'user-143': 'High',
-          'user-144': 'Medium',
-          'user-145': 'High',
-          'user-146': 'Medium',
-          'user-147': 'Low',
-        };
-        
-        const level = riskLevels[user.id] || 'Medium';
-        
-        return (
-          <StatusBadge 
-            status={
-              level === 'High' ? 'Rejected' : 
-              level === 'Medium' ? 'Pending' : 'Approved'
-            } 
-          />
-        );
-      }
-    },
-    { 
-      key: 'actions',
-      header: 'Actions',
-      render: (user) => (
-        <div className="flex space-x-2">
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              selectUser(user.id);
-            }}
-            className="p-1.5 rounded-md text-primary-600 hover:bg-primary-50"
-            title="View Details"
-          >
-            <FiEdit2 size={16} />
-          </button>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              // Would open message modal in a real app
-            }}
-            className="p-1.5 rounded-md text-neutral-600 hover:bg-neutral-100"
-            title="Message User"
-          >
-            <FiMessageSquare size={16} />
-          </button>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              handleResolveFlag(user.id);
-            }}
-            className="p-1.5 rounded-md text-success-500 hover:bg-success-50"
-            title="Resolve Flag"
-          >
-            <FiCheck size={16} />
-          </button>
-        </div>
-      )
+      key: 'phone',
+      header: 'Phone Number',
+      
     },
   ];
 
@@ -176,20 +114,6 @@ function FlaggedAccounts() {
               <FiAlertTriangle size={24} className="text-error-600" />
             </div>
           </div>
-          <div className="mt-4 pt-4 border-t border-error-500/20">
-            <div className="flex justify-between text-sm">
-              <span className="text-neutral-600">High Risk</span>
-              <span className="font-medium text-error-600">2</span>
-            </div>
-            <div className="flex justify-between text-sm mt-1">
-              <span className="text-neutral-600">Medium Risk</span>
-              <span className="font-medium text-warning-600">2</span>
-            </div>
-            <div className="flex justify-between text-sm mt-1">
-              <span className="text-neutral-600">Low Risk</span>
-              <span className="font-medium text-success-600">1</span>
-            </div>
-          </div>
         </Card>
       </div>
       
@@ -203,7 +127,7 @@ function FlaggedAccounts() {
             <Table 
               columns={columns} 
               data={filteredUsers} 
-              onRowClick={(item) => selectUser(item.id)}
+              onRowClick={(item) => selectFlaggedUser(item.id)}
               isLoading={isLoading}
             />
           </Card>
@@ -215,17 +139,17 @@ function FlaggedAccounts() {
             title="Account Details" 
             className="h-full"
           >
-            {selectedUser ? (
+            {selectedFlaggedUser ? (
               <div className="space-y-4">
                 <div className="flex flex-col items-center p-4">
-                  <div className="w-16 h-16 rounded-full bg-error-100 flex items-center justify-center text-error-600 text-xl font-semibold">
-                    {selectedUser.name.charAt(0)}
+                  <div className="w-16 h-16 rounded-full bg-red-200 flex items-center justify-center text-error-600 text-xl font-semibold">
+                    {selectedFlaggedUser.fullName.charAt(0)}
                   </div>
-                  <h3 className="mt-3 text-lg font-medium text-neutral-800">{selectedUser.name}</h3>
-                  <div className="mt-1 text-sm text-neutral-500">{selectedUser.email}</div>
+                  <h3 className="mt-3 text-lg font-medium text-neutral-800">{selectedFlaggedUser.name}</h3>
+                  <div className="mt-1 text-sm text-neutral-500">{selectedFlaggedUser.email}</div>
                   
                   <div className="mt-2">
-                    <StatusBadge status={selectedUser.status} />
+                    <StatusBadge status={selectedFlaggedUser.status} />
                   </div>
                 </div>
                 
@@ -246,28 +170,11 @@ function FlaggedAccounts() {
                             'user-147': 'Multiple Failed Payments',
                           };
                           
-                          return reasons[selectedUser.id] || 'Manual Flag';
+                          return reasons[selectedFlaggedUser.id] || 'Manual Flag';
                         })()}
                       </span>
                     </div>
                     
-                    <div className="flex justify-between">
-                      <span className="text-sm text-neutral-500">Risk Level:</span>
-                      <span className="text-sm font-medium">
-                        {/* Get risk level from flagged accounts data (simulated) */}
-                        {(() => {
-                          const riskLevels = {
-                            'user-143': 'High',
-                            'user-144': 'Medium',
-                            'user-145': 'High',
-                            'user-146': 'Medium',
-                            'user-147': 'Low',
-                          };
-                          
-                          return riskLevels[selectedUser.id] || 'Medium';
-                        })()}
-                      </span>
-                    </div>
                     
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-500">Flagged Date:</span>
@@ -282,19 +189,19 @@ function FlaggedAccounts() {
                             'user-147': '2025-01-14',
                           };
                           
-                          return dates[selectedUser.id] || '2025-01-15';
+                          return dates[selectedFlaggedUser.id] || '2025-01-15';
                         })()}
                       </span>
                     </div>
                     
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-500">Total Borrowed:</span>
-                      <span className="text-sm font-medium">#{selectedUser.totalBorrowed}</span>
+                      <span className="text-sm font-medium">#{selectedFlaggedUser.totalLoanAmount}</span>
                     </div>
                     
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-500">Loan Count:</span>
-                      <span className="text-sm font-medium">{selectedUser.loanCount}</span>
+                      <span className="text-sm font-medium">{selectedFlaggedUser.loanRequestCount}</span>
                     </div>
                   </div>
                 </div>
@@ -310,7 +217,7 @@ function FlaggedAccounts() {
                 
                 <div className="flex gap-2">
                   <button 
-                    onClick={() => handleResolveFlag(selectedUser.id)}
+                    onClick={() => unFlagAccount(selectedFlaggedUser.id)}
                     className="flex-1 btn flex items-center justify-center gap-2 bg-success-500 text-white hover:bg-success-600"
                   >
                     <FiCheck size={16} />

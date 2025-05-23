@@ -7,7 +7,6 @@ import StatusBadge from '../components/ui/StatusBadge';
 
 function UserKYC() {
   const { 
-    kycSubmissions, 
     selectedKyc,
     filters,
     fetchKycSubmissions, 
@@ -43,10 +42,10 @@ function UserKYC() {
   
   // Define table columns
   const columns = [
-    { key: 'userName', header: 'User' },
-    { key: 'documentType', header: 'Document Type' },
-    { key: 'date', header: 'Submission Date' },
-    { key: 'status', header: 'Status', render: (item) => <StatusBadge status={item.status} /> },
+    { key: 'fullName', header: 'User' },
+    { key: 'idType', header: 'Document Type' },
+    { key: 'createdAt', header: 'Submission Date' },
+    { key: 'kycStatus', header: 'Status', render: (item) => <StatusBadge status={item.kycStatus} /> },
     { 
       key: 'actions',
       header: 'Actions',
@@ -85,7 +84,7 @@ function UserKYC() {
               >
                 <option value="all">All Status</option>
                 <option value="pending">Pending</option>
-                <option value="verified">Verified</option>
+                <option value="approved">Approved</option>
                 <option value="rejected">Rejected</option>
               </select>
             </div>
@@ -160,19 +159,19 @@ function UserKYC() {
                   
                   <div className="flex justify-between">
                     <span className="text-sm text-neutral-500">Document Type:</span>
-                    <span className="text-sm font-medium">{selectedKyc.documentType}</span>
+                    <span className="text-sm font-medium">{selectedKyc.idType}</span>
                   </div>
                   <div className="flex justify-between mt-2">
                     <span className="text-sm text-neutral-500">Submitted By:</span>
-                    <span className="text-sm font-medium">{selectedKyc.userName}</span>
+                    <span className="text-sm font-medium">{selectedKyc.fullName}</span>
                   </div>
                   <div className="flex justify-between mt-2">
                     <span className="text-sm text-neutral-500">Submission Date:</span>
-                    <span className="text-sm font-medium">{selectedKyc.date}</span>
+                    <span className="text-sm font-medium">{new Date(selectedKyc.createdAt).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between mt-2">
                     <span className="text-sm text-neutral-500">Status:</span>
-                    <StatusBadge status={selectedKyc.status} />
+                    <StatusBadge status={selectedKyc.kycStatus} />
                   </div>
                   <div className="mt-4">
                     <span className="text-sm text-neutral-500">Notes:</span>
@@ -182,27 +181,27 @@ function UserKYC() {
                   </div>
                 </div>
                 
-                <div className="flex flex-col md:flex-row gap-2">
+                <div className="grid grid-cols-3 gap-1 mt-4">
                   <button
-                    onClick={() => handleStatusUpdate('Verified')}
-                    className="flex-1 btn flex items-center justify-center gap-2 bg-success-500 text-white hover:bg-success-600"
-                    disabled={selectedKyc.status === 'Verified'}
+                    onClick={() => handleStatusUpdate('approve')}
+                    className="flex-1 btn-success disabled:bg-gray-500 disabled:cursor-not-allowed p-2 flex items-center gap-2 justify-center rounded-md text-sm"
+                    disabled={selectedKyc.kycStatus.toLowerCase() === 'approved' || isLoading}
                   >
                     <FiCheckCircle size={16} />
-                    <span>Verify</span>
+                    <span>Approved</span>
                   </button>
                   <button
-                    onClick={() => handleStatusUpdate('Rejected')}
-                    className="flex-1 btn flex items-center justify-center gap-2 bg-error-500 text-white hover:bg-error-600"
-                    disabled={selectedKyc.status === 'Rejected'}
+                    onClick={() => handleStatusUpdate('rejected')}
+                    className="flex-1 btn-danger p-2 flex disabled:bg-gray-500 disabled:cursor-not-allowed items-center gap-2 justify-center rounded-md text-sm"
+                    disabled={selectedKyc.kycStatus.toLowerCase() === 'rejected' || isLoading}
                   >
                     <FiXCircle size={16} />
                     <span>Reject</span>
                   </button>
                   <button
-                    onClick={() => handleStatusUpdate('Pending')}
-                    className="flex-1 btn flex items-center justify-center gap-2 bg-warning-500 text-white hover:bg-warning-600"
-                    disabled={selectedKyc.status === 'Pending'}
+                    onClick={() => handleStatusUpdate('pending')}
+                    className="flex-1 btn-warning p-2 flex disabled:bg-gray-500 disabled:cursor-not-allowed items-center gap-2 justify-center rounded-md text-sm"
+                    disabled={selectedKyc.kycStatus.toLowerCase() === 'pending' || isLoading}
                   >
                     <FiAlertCircle size={16} />
                     <span>Mark Pending</span>

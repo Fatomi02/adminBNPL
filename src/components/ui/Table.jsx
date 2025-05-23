@@ -61,7 +61,8 @@ function Table({ columns, data, pagination = true, onRowClick, isLoading = false
                     {column.render 
                       ? column.render(item)
                       : column.key === 'status' 
-                        ? <StatusBadge status={item[column.key]} />
+                        ? <StatusBadge status={item[column.key]} /> : (column.key === 'createdAt' || column.key === 'date') ?
+                          new Date(item[column.key]).toLocaleDateString()
                         : item[column.key]}
                   </td>
                 ))}

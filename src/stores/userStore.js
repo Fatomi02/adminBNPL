@@ -1,72 +1,103 @@
-import { create } from 'zustand';
-import { mockUserData } from '../data/mockData';
+import { create } from "zustand";
+import api from "../api/api";
+import { toast } from "react-toastify";
 
 const useUserStore = create((set, get) => ({
-  users: mockUserData.users,
+  users: [],
   selectedUser: null,
+  selectedFlaggedUser: null,
   filters: {
-    status: 'all',
-    joinDate: 'all',
-    search: '',
+    status: "all",
+    joinDate: "all",
+    search: "",
   },
   isLoading: false,
   error: null,
-  
+
   fetchUsers: async () => {
     set({ isLoading: true });
-    
     try {
-      // In a real app, this would be an API call
-      // await new Promise(resolve => setTimeout(resolve, 1000)); // simulate delay
-      set({ 
-        users: mockUserData.users,
+      const response = await api.get("auth/users");
+      set({
+        users: response?.data?.users,
         isLoading: false,
-        error: null
+        error: null,
       });
     } catch (error) {
+      toast.error( error?.response?.data?.message || "Error fetching users");
       set({ isLoading: false, error: error.message });
     }
   },
-  
+
+  flagAccount: async (id) => {
+    set({ isLoading: true });
+    try {
+      const response = await api.patch(`admin/flag-user/${id}`, {
+        action: 'flag'
+      });
+
+      toast.success(response?.data?.message || "Flagged accounts fetched successfully");
+      window.location.reload();
+    } catch (error) {
+      toast.error( error?.response?.data?.message || "Error fetching flagged accounts");
+      set({ isLoading: false, error: error.message });
+    }
+  },
+
+  unFlagAccount: async (id) => {
+    set({ isLoading: true });
+    try {
+      const response = await api.patch(`admin/flag-user/${id}`, {
+        action: 'unflag'
+      });
+      toast.success(response?.data?.message || "Flagged accounts fetched successfully");
+      window.location.reload();
+    } catch (error) {
+      toast.error( error?.response?.data?.message || "Error fetching flagged accounts");
+      set({ isLoading: false, error: error.message });
+    }
+  },
+
   selectUser: (userId) => {
-    const selectedUser = get().users.find(user => user.id === userId);
+    const selectedUser = get().users.find((user) => user.id === userId);
     set({ selectedUser });
   },
-  
-  updateUserStatus: (userId, status) => {
-    const updatedUsers = get().users.map(user => 
-      user.id === userId ? { ...user, status } : user
-    );
-    
-    set({ 
-      users: updatedUsers,
-      selectedUser: get().selectedUser?.id === userId 
-        ? { ...get().selectedUser, status } 
-        : get().selectedUser
-    });
+
+  selectFlaggedUser: (userId) => {
+    const selectedFlaggedUser = get().users.find((user) => user.id === userId);
+    set({ selectedFlaggedUser });
   },
-  
+
   setFilters: (newFilters) => {
     set({ filters: { ...get().filters, ...newFilters } });
   },
-  
+
   getFilteredUsers: () => {
     const { users, filters } = get();
-    
-    return users.filter(user => {
+    const searchTerm = filters.search?.trim().toLowerCase();
+
+    return users.filter((user) => {
       // Filter by status
-      if (filters.status !== 'all' && user.status.toLowerCase() !== filters.status.toLowerCase()) {
+      if (
+        filters.status !== "all" &&
+        user.status?.toLowerCase() !== filters.status.toLowerCase()
+      ) {
         return false;
       }
-      
+
       // Filter by search term
-      if (filters.search && !`${user.id} ${user.name} ${user.email}`.toLowerCase().includes(filters.search.toLowerCase())) {
-        return false;
+      if (searchTerm) {
+        const combinedFields = `${user.id ?? ""} ${user.fullName ?? ""} ${
+          user.email ?? ""
+        }`.toLowerCase();
+        if (!combinedFields.includes(searchTerm)) {
+          return false;
+        }
       }
-      
+
       return true;
     });
-  }
+  },
 }));
 
 export default useUserStore;

@@ -6,12 +6,13 @@ import LoanApplications from './pages/LoanApplications';
 import PaymentHistory from './pages/PaymentHistory';
 import UserList from './pages/UserList';
 import FlaggedAccounts from './pages/FlaggedAccounts';
-import ManualOverrides from './pages/ManualOverrides';
 import './App.css';
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <Router>
+    <><Router>
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
@@ -20,10 +21,14 @@ function App() {
           <Route path="/payment-history" element={<PaymentHistory />} />
           <Route path="/users" element={<UserList />} />
           <Route path="/flagged-accounts" element={<FlaggedAccounts />} />
-          <Route path="/manual-overrides" element={<ManualOverrides />} />
         </Routes>
       </Layout>
-    </Router>
+    </Router><ToastContainer
+        pauseOnHover={true}
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick={true} /></>
   );
 }
 

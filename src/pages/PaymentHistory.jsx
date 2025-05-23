@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
-import { FiSearch, FiDollarSign, FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import { FiSearch, FiArrowUp, FiArrowDown } from 'react-icons/fi';
 import usePaymentStore from '../stores/paymentStore';
 import Card from '../components/ui/Card';
 import Table from '../components/ui/Table';
 import StatusBadge from '../components/ui/StatusBadge';
-import BarChart from '../components/charts/BarChart';
 
 function PaymentHistory() {
   const { 
-    transactions, 
-    selectedTransaction,
     filters,
-    fetchTransactions, 
+    fetchPaymentHistory, 
     selectTransaction,
     setFilters,
     getFilteredTransactions,
@@ -21,8 +18,8 @@ function PaymentHistory() {
   const [searchInput, setSearchInput] = useState('');
   
   useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
+    fetchPaymentHistory();
+  }, [fetchPaymentHistory]);
   
   // Handle search
   const handleSearch = () => {
@@ -36,7 +33,7 @@ function PaymentHistory() {
   
   // Define table columns
   const columns = [
-    { key: 'userName', header: 'User' },
+    { key: 'user', header: 'User' },
     { 
       key: 'amount', 
       header: 'Amount', 
@@ -52,7 +49,7 @@ function PaymentHistory() {
       header: 'Type',
       render: (item) => (
         <div className="flex items-center">
-          {item.type === 'Repayment' ? 
+          {item.type.toLowerCase === 'Repayment' ? 
             <FiArrowDown className="mr-1 text-success-500" /> : 
             <FiArrowUp className="mr-1 text-primary-500" />
           }
@@ -60,39 +57,11 @@ function PaymentHistory() {
         </div>
       )
     },
-    { key: 'paymentMethod', header: 'Method' },
     { key: 'date', header: 'Date' },
     { key: 'status', header: 'Status', render: (item) => <StatusBadge status={item.status} /> },
   ];
   
-  // Prepare chart data - group by date
-  const chartData = transactions.reduce((acc, transaction) => {
-    // Extract month from date
-    const month = transaction.date.split('-')[1];
-    
-    // Find if we already have an entry for this month
-    const existingEntry = acc.find(entry => entry.month === month);
-    
-    if (existingEntry) {
-      if (transaction.type === 'Repayment') {
-        existingEntry.repayments += transaction.amount;
-      } else {
-        existingEntry.disbursements += transaction.amount;
-      }
-    } else {
-      acc.push({
-        month,
-        repayments: transaction.type === 'Repayment' ? transaction.amount : 0,
-        disbursements: transaction.type === 'Disbursement' ? transaction.amount : 0,
-      });
-    }
-    
-    return acc;
-  }, []);
   
-  // Sort chart data by month
-  chartData.sort((a, b) => a.month - b.month);
-
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-neutral-800 md:hidden">Payment & Repayment History</h1>
@@ -179,22 +148,7 @@ function PaymentHistory() {
           </div>
         </div>
       </Card>
-      
-      {/* Visualizations */}
-      <Card 
-        title="Payment Activity" 
-        subtitle="Repayments vs Disbursements (Monthly)"
-      >
-        <div className="h-64">
-          <BarChart 
-            data={chartData} 
-            xKey="month" 
-            yKey="repayments" 
-            color="#10b981"
-            height={250}
-          />
-        </div>
-      </Card>
+
       
       {/* Transaction List */}
       <Card title="Transaction History">

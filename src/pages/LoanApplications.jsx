@@ -1,58 +1,66 @@
-import { useEffect, useState } from 'react';
-import { FiSearch, FiCheckCircle, FiXCircle, FiAlertCircle } from 'react-icons/fi';
-import useLoanStore from '../stores/loanStore';
-import Card from '../components/ui/Card';
-import Table from '../components/ui/Table';
-import StatusBadge from '../components/ui/StatusBadge';
+import { useEffect, useState } from "react";
+import {
+  FiSearch,
+  FiCheckCircle,
+  FiXCircle,
+} from "react-icons/fi";
+import useLoanStore from "../stores/loanStore";
+import Card from "../components/ui/Card";
+import Table from "../components/ui/Table";
+import StatusBadge from "../components/ui/StatusBadge";
 
 function LoanApplications() {
-  const { 
-    loanApplications, 
+  const {
+    // loanApplications,
     selectedLoan,
     filters,
-    fetchLoanApplications, 
+    fetchLoanApplications,
     selectLoan,
     updateLoanStatus,
     setFilters,
     getFilteredApplications,
-    isLoading
+    isLoading,
   } = useLoanStore();
-  
-  const [searchInput, setSearchInput] = useState('');
-  
+
+  const [searchInput, setSearchInput] = useState("");
+
   useEffect(() => {
     fetchLoanApplications();
   }, [fetchLoanApplications]);
-  
+
   // Handle search
   const handleSearch = () => {
     setFilters({ search: searchInput });
   };
-  
+
   // Handle filter change
   const handleFilterChange = (e) => {
     setFilters({ [e.target.name]: e.target.value });
   };
-  
+
   // Handle status update
   const handleStatusUpdate = (status) => {
     if (selectedLoan) {
-      updateLoanStatus(selectedLoan.id, status);
+      updateLoanStatus(selectedLoan.loanId, status);
     }
   };
-  
+
   // Define table columns
   const columns = [
-    { key: 'userName', header: 'User' },
-    { key: 'amount', header: 'Amount', render: (item) => `#${item.amount}` },
-    { key: 'purpose', header: 'Purpose' },
-    { key: 'date', header: 'Application Date' },
-    { key: 'status', header: 'Status', render: (item) => <StatusBadge status={item.status} /> },
-    { 
-      key: 'actions',
-      header: 'Actions',
+    { key: "fullName", header: "User" },
+    { key: "amount", header: "Amount", render: (item) => `#${item.amount}` },
+    { key: "purpose", header: "Purpose" },
+    { key: "createdAt", header: "Application Date" },
+    {
+      key: "status",
+      header: "Status",
+      render: (item) => <StatusBadge status={item.status} />,
+    },
+    {
+      key: "actions",
+      header: "Actions",
       render: (item) => (
-        <button 
+        <button
           onClick={(e) => {
             e.stopPropagation();
             selectLoan(item.id);
@@ -61,20 +69,25 @@ function LoanApplications() {
         >
           View Details
         </button>
-      )
+      ),
     },
   ];
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-neutral-800 md:hidden">Loan Applications Tracker</h1>
-      
+      <h1 className="text-2xl font-semibold text-neutral-800 md:hidden">
+        Loan Applications Tracker
+      </h1>
+
       {/* Filters */}
       <Card className="bg-white">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex flex-col md:flex-row gap-4 md:items-center">
             <div className="w-full md:w-auto">
-              <label htmlFor="status" className="block text-sm font-medium text-neutral-600 mb-1">
+              <label
+                htmlFor="status"
+                className="block text-sm font-medium text-neutral-600 mb-1"
+              >
                 Status
               </label>
               <select
@@ -88,11 +101,15 @@ function LoanApplications() {
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
                 <option value="rejected">Rejected</option>
+                <option value="paid off">Paid Off</option>
               </select>
             </div>
-            
+
             <div className="w-full md:w-auto">
-              <label htmlFor="amount" className="block text-sm font-medium text-neutral-600 mb-1">
+              <label
+                htmlFor="amount"
+                className="block text-sm font-medium text-neutral-600 mb-1"
+              >
                 Loan Amount
               </label>
               <select
@@ -103,14 +120,17 @@ function LoanApplications() {
                 className="w-full md:w-40 px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
               >
                 <option value="all">All Amounts</option>
-                <option value="low">Under #500</option>
-                <option value="medium">#500 - #2,000</option>
-                <option value="high">Over #2,000</option>
+                <option value="low">Under #20,00</option>
+                <option value="medium">#20,000 - #50,000</option>
+                <option value="high">Over #50,000</option>
               </select>
             </div>
-            
+
             <div className="w-full md:w-auto">
-              <label htmlFor="dateRange" className="block text-sm font-medium text-neutral-600 mb-1">
+              <label
+                htmlFor="dateRange"
+                className="block text-sm font-medium text-neutral-600 mb-1"
+              >
                 Date Range
               </label>
               <select
@@ -127,9 +147,12 @@ function LoanApplications() {
               </select>
             </div>
           </div>
-          
+
           <div className="w-full md:w-64">
-            <label htmlFor="search" className="block text-sm font-medium text-neutral-600 mb-1">
+            <label
+              htmlFor="search"
+              className="block text-sm font-medium text-neutral-600 mb-1"
+            >
               Search
             </label>
             <div className="relative">
@@ -139,10 +162,10 @@ function LoanApplications() {
                 placeholder="Search user or ID..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
               />
-              <button 
+              <button
                 onClick={handleSearch}
                 className="absolute inset-y-0 left-0 px-3 flex items-center"
               >
@@ -152,20 +175,20 @@ function LoanApplications() {
           </div>
         </div>
       </Card>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Loan Applications Table */}
         <div className="lg:col-span-2">
           <Card title="Loan Applications">
-            <Table 
-              columns={columns} 
-              data={getFilteredApplications()} 
+            <Table
+              columns={columns}
+              data={getFilteredApplications()}
               onRowClick={(item) => selectLoan(item.id)}
               isLoading={isLoading}
             />
           </Card>
         </div>
-        
+
         {/* Selected Loan Details */}
         <div>
           <Card title="Loan Details">
@@ -173,65 +196,76 @@ function LoanApplications() {
               <div className="space-y-4">
                 <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
                   <div className="flex items-center justify-center h-32 bg-neutral-100 rounded mb-4">
-                    <span className="ml-2 text-2xl font-semibold text-neutral-800">#{selectedLoan.amount}</span>
+                    <span className="ml-2 text-2xl font-semibold text-neutral-800">
+                      #{selectedLoan.amount}
+                    </span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-sm text-neutral-500">Applicant:</span>
-                    <span className="text-sm font-medium">{selectedLoan.userName}</span>
+                    <span className="text-sm font-medium">
+                      {selectedLoan.fullName}
+                    </span>
                   </div>
                   <div className="flex justify-between mt-2">
-                    <span className="text-sm text-neutral-500">Loan Purpose:</span>
-                    <span className="text-sm font-medium">{selectedLoan.purpose}</span>
+                    <span className="text-sm text-neutral-500">
+                      Loan Purpose:
+                    </span>
+                    <span className="text-sm font-medium">
+                      {selectedLoan.purpose}
+                    </span>
                   </div>
                   <div className="flex justify-between mt-2">
-                    <span className="text-sm text-neutral-500">Term:</span>
-                    <span className="text-sm font-medium">{selectedLoan.term}</span>
+                    <span className="text-sm text-neutral-500">
+                      Interest Rate:
+                    </span>
+                    <span className="text-sm font-medium">
+                      {selectedLoan.interestRate}
+                    </span>
                   </div>
                   <div className="flex justify-between mt-2">
-                    <span className="text-sm text-neutral-500">Interest Rate:</span>
-                    <span className="text-sm font-medium">{selectedLoan.interestRate}</span>
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <span className="text-sm text-neutral-500">Application Date:</span>
-                    <span className="text-sm font-medium">{selectedLoan.date}</span>
+                    <span className="text-sm text-neutral-500">
+                      Application Date:
+                    </span>
+                    <span className="text-sm font-medium">
+                      {new Date(selectedLoan.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="flex justify-between mt-2">
                     <span className="text-sm text-neutral-500">Status:</span>
                     <StatusBadge status={selectedLoan.status} />
                   </div>
                 </div>
-                
-                <div className="flex flex-col md:flex-row gap-2">
-                  <button
-                    onClick={() => handleStatusUpdate('Approved')}
-                    className="flex-1 btn flex items-center justify-center gap-2 bg-success-500 text-white hover:bg-success-600"
-                    disabled={selectedLoan.status === 'Approved'}
-                  >
-                    <FiCheckCircle size={16} />
-                    <span>Approve</span>
-                  </button>
-                  <button
-                    onClick={() => handleStatusUpdate('Rejected')}
-                    className="flex-1 btn flex items-center justify-center gap-2 bg-error-500 text-white hover:bg-error-600"
-                    disabled={selectedLoan.status === 'Rejected'}
-                  >
-                    <FiXCircle size={16} />
-                    <span>Reject</span>
-                  </button>
-                  <button
-                    onClick={() => handleStatusUpdate('Pending')}
-                    className="flex-1 btn flex items-center justify-center gap-2 bg-warning-500 text-white hover:bg-warning-600"
-                    disabled={selectedLoan.status === 'Pending'}
-                  >
-                    <FiAlertCircle size={16} />
-                    <span>Mark Pending</span>
-                  </button>
-                </div>
+                {selectedLoan.status.toLowerCase() !== "paid off" && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => handleStatusUpdate("approve")}
+                      className="flex-1 btn flex items-center justify-center disabled:bg-gray-500 disabled:cursor-not-allowed gap-2 bg-success-500 text-white hover:bg-success-600"
+                      disabled={
+                        selectedLoan.status.toLowerCase() === "approved"
+                      }
+                    >
+                      <FiCheckCircle size={16} />
+                      <span>Approve</span>
+                    </button>
+                    <button
+                      onClick={() => handleStatusUpdate("reject")}
+                      className="flex-1 btn flex items-center justify-center disabled:bg-gray-500 disabled:cursor-not-allowed gap-2 bg-error-500 text-white hover:bg-error-600"
+                      disabled={
+                        selectedLoan.status.toLowerCase() === "rejected"
+                      }
+                    >
+                      <FiXCircle size={16} />
+                      <span>Reject</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="p-8 flex flex-col items-center justify-center text-center">
-                <p className="text-neutral-500">Select a loan application to view details</p>
+                <p className="text-neutral-500">
+                  Select a loan application to view details
+                </p>
               </div>
             )}
           </Card>

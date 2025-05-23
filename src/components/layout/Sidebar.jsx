@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useLocation, Link } from 'react-router-dom';
 import { 
   FiHome, FiFileText, FiDollarSign, FiUsers, 
@@ -15,7 +16,6 @@ function Sidebar({ isOpen, closeSidebar }) {
     { name: 'Payment History', icon: FiActivity, path: '/payment-history' },
     { name: 'User List', icon: FiUsers, path: '/users' },
     { name: 'Flagged Accounts', icon: FiAlertTriangle, path: '/flagged-accounts' },
-    { name: 'Manual Overrides', icon: FiSettings, path: '/manual-overrides' },
   ];
 
   return (
@@ -72,11 +72,11 @@ function Sidebar({ isOpen, closeSidebar }) {
                   <span>{item.name}</span>
                   
                   {/* Notification indicators for certain sections */}
-                  {(item.path === '/loan-applications' || item.path === '/flagged-accounts') && (
+                  {/* {(item.path === '/loan-applications' || item.path === '/flagged-accounts') && (
                     <span className="ml-auto bg-error-500 text-white text-xs px-2 py-1 rounded-full">
-                      {item.path === '/loan-applications' ? '12' : '5'}
+                      {item.path === '/loan-applications'}
                     </span>
-                  )}
+                  )} */}
                 </Link>
               </li>
             ))}

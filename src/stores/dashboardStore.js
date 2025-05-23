@@ -1,13 +1,15 @@
 import { create } from 'zustand';
+import api from '../api/api';
 import { mockDashboardData } from '../data/mockData';
+import { toast } from 'react-toastify';
 
 const useDashboardStore = create((set, get) => ({
-  stats: mockDashboardData.stats,
-  loanApplications: mockDashboardData.recentLoanApplications,
-  kycSubmissions: mockDashboardData.recentKYCSubmissions,
-  flaggedAccounts: mockDashboardData.flaggedAccounts,
+  users: [],
+  stats: {},
+  loanApplications: [],
+  kycSubmissions: [],
   paymentTrends: mockDashboardData.paymentTrends,
-  loanDistribution: mockDashboardData.loanDistribution,
+  loanDistribution: [],
   isLoading: false,
   error: null,
   
@@ -15,19 +17,22 @@ const useDashboardStore = create((set, get) => ({
     set({ isLoading: true });
     
     try {
-      // In a real app, this would be an API call
-      // await new Promise(resolve => setTimeout(resolve, 1000)); // simulate delay
+      const res = await api.get('analytics/dashboard-summary')
+      const loadApplications = await api.get('loans/applications')
+      const users = await api.get("auth/users");
+      const pieStats = await api.get("loans/stats/category");
       set({ 
-        stats: mockDashboardData.stats,
-        loanApplications: mockDashboardData.recentLoanApplications,
-        kycSubmissions: mockDashboardData.recentKYCSubmissions,
-        flaggedAccounts: mockDashboardData.flaggedAccounts,
+        users: users?.data?.users,
+        stats: res.data,
+        loanApplications: loadApplications?.data?.slice(0, 5),
+        kycSubmissions: users?.data?.users?.slice(0, 5),
         paymentTrends: mockDashboardData.paymentTrends,
-        loanDistribution: mockDashboardData.loanDistribution,
+        loanDistribution: pieStats.data,
         isLoading: false,
         error: null
       });
     } catch (error) {
+      toast.error(error.response.data.message || 'Failed to fetch dashboard data');
       set({ isLoading: false, error: error.message });
     }
   },

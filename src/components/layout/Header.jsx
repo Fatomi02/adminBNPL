@@ -1,13 +1,14 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { FiMenu, FiSearch, FiBell, FiUser } from 'react-icons/fi';
+import { FiMenu, FiBell } from 'react-icons/fi';
 import useAuthStore from '../../stores/authStore';
 
 function Header({ openSidebar }) {
   const location = useLocation();
   const { user } = useAuthStore();
   const [scrolled, setScrolled] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(3);
+  // const [notificationCount, setNotificationCount] = useState(3);
   
   // Get page title based on current route
   const getPageTitle = () => {
@@ -66,23 +67,14 @@ function Header({ openSidebar }) {
         </div>
         
         <div className="flex items-center space-x-4">
-          <div className="relative hidden md:block">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="pl-10 pr-4 py-2 rounded-md border border-neutral-200 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 w-64 text-sm"
-            />
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400" size={16} />
-          </div>
-          
           <div className="relative">
             <button className="p-2 rounded-md text-neutral-500 hover:bg-neutral-100 relative">
               <FiBell size={20} />
-              {notificationCount > 0 && (
+              {/* {notificationCount > 0 && (
                 <span className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 bg-error-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   {notificationCount}
                 </span>
-              )}
+              )} */}
             </button>
           </div>
           

@@ -12,7 +12,7 @@ const useAuthStore = create((set) => ({
   isLoading: false,
   error: null,
   
-  login: (email, password) => 
+  login: (email) => 
     set({ 
       user: {
         id: 'admin-123',

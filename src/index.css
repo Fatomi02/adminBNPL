@@ -95,6 +95,19 @@
     @apply bg-neutral-200 text-neutral-800 hover:bg-neutral-300;
   }
   
+  
+  .btn-success {
+    @apply bg-green-500 text-white hover:opacity-60 disabled:bg-gray-500 cursor-pointer disabled:cursor-not-allowed;
+  }
+  
+  .btn-warning {
+    @apply bg-warning-500 text-white hover:opacity-60 disabled:bg-gray-500 cursor-pointer disabled:cursor-not-allowed;
+  }
+
+  .btn-danger {
+    @apply bg-red-500 text-white hover:opacity-60 disabled:bg-gray-500 cursor-pointer disabled:cursor-not-allowed;
+  }
+  
   .card {
     @apply bg-white rounded-lg shadow-md p-6;
   }
@@ -102,7 +115,7 @@
   .badge {
     @apply px-2 py-1 rounded-full text-xs font-medium;
   }
-  
+
   /* .badge-success {
     @apply bg-success-50 text-success-600;
   }
