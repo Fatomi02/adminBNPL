@@ -54,7 +54,7 @@ const usePaymentStore = create((set, get) => ({
       }
       
       // Filter by search term
-      if (filters.search && !`${tx.userId} ${tx.userName} ${tx.id}`.toLowerCase().includes(filters.search.toLowerCase())) {
+      if (filters.search && !`${tx.userId} ${tx.user} ${tx.id}`.toLowerCase().includes(filters.search.toLowerCase())) {
         return false;
       }
       
