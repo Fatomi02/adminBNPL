@@ -34,7 +34,7 @@ const useLoanStore = create((set, get) => ({
 
   selectLoan: (loanId) => {
     const selectedLoan = get().loanApplications.find(
-      (loan) => loan.id === loanId
+      (loan) => loan.loanId === loanId
     );
     set({ selectedLoan });
   },

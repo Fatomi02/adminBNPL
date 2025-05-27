@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  FiSearch,
-  FiCheckCircle,
-  FiXCircle,
-} from "react-icons/fi";
+import { FiSearch, FiCheckCircle, FiXCircle } from "react-icons/fi";
 import useLoanStore from "../stores/loanStore";
 import Card from "../components/ui/Card";
 import Table from "../components/ui/Table";
@@ -63,7 +59,7 @@ function LoanApplications() {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            selectLoan(item.id);
+            selectLoan(item.loanId);
           }}
           className="text-primary-600 hover:text-primary-700 font-medium text-sm"
         >
@@ -183,7 +179,7 @@ function LoanApplications() {
             <Table
               columns={columns}
               data={getFilteredApplications()}
-              onRowClick={(item) => selectLoan(item.id)}
+              onRowClick={(item) => selectLoan(item.loanId)}
               isLoading={isLoading}
             />
           </Card>
@@ -194,7 +190,7 @@ function LoanApplications() {
           <Card title="Loan Details">
             {selectedLoan ? (
               <div className="space-y-4">
-                <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
+                <div className="bg-neutral-50 flex flex-col gap-2 p-4 rounded-lg border border-neutral-200">
                   <div className="flex items-center justify-center h-32 bg-neutral-100 rounded mb-4">
                     <span className="ml-2 text-2xl font-semibold text-neutral-800">
                       #{selectedLoan.amount}
@@ -207,7 +203,23 @@ function LoanApplications() {
                       {selectedLoan.fullName}
                     </span>
                   </div>
-                  <div className="flex justify-between mt-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-neutral-500">
+                      Vendor Name:
+                    </span>
+                    <span className="text-sm font-medium">
+                      {selectedLoan.vendorDetails.vendorName}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-neutral-500">
+                      Vendory Category:
+                    </span>
+                    <span className="text-sm font-medium">
+                      {selectedLoan.vendorDetails.category}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-sm text-neutral-500">
                       Loan Purpose:
                     </span>
@@ -215,7 +227,7 @@ function LoanApplications() {
                       {selectedLoan.purpose}
                     </span>
                   </div>
-                  <div className="flex justify-between mt-2">
+                  <div className="flex justify-between">
                     <span className="text-sm text-neutral-500">
                       Interest Rate:
                     </span>
@@ -223,7 +235,7 @@ function LoanApplications() {
                       {selectedLoan.interestRate}
                     </span>
                   </div>
-                  <div className="flex justify-between mt-2">
+                  <div className="flex justify-between">
                     <span className="text-sm text-neutral-500">
                       Application Date:
                     </span>
@@ -231,7 +243,7 @@ function LoanApplications() {
                       {new Date(selectedLoan.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <div className="flex justify-between mt-2">
+                  <div className="flex justify-between">
                     <span className="text-sm text-neutral-500">Status:</span>
                     <StatusBadge status={selectedLoan.status} />
                   </div>
